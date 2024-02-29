@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart.js Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+      <div>
+        <button onclick="updateTest1()">Update Test Arrays</button>
+        <button onclick="updateTestReset()">Reset</button>
+        <button onclick="updateTestSingle()">Update Test Single</button>
+    </div>
+    <div style="position: relative; width: 600px; height: 600px;">
+        <canvas id="myChart"></canvas>
+    </div>
+
+
+
+</body>
+
+<script src="dist/chart.umd.js"></script>
+<script lang ="text/javascript">
+            // Chart Data
+            const data = {
+            labels: ['January', 'February', 'March'],
+            datasets: [{
+                id: 'd4a5c6ce-b07b-4ee6-b370-007873ddd2e5',
+                label: 'Dataset 1',
+                data: [1, 2, 3],
+
+            }]
+        };
+
+        // Chart Options
+        const options = {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        };
+
+        // Create Chart
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: options
+        });
+
+        // Update Functions
+        function updateDatasets(chart, datasets) {
+            const datasetMetas = chart.getSortedVisibleDatasetMetas();
+            datasets.forEach(newDataset => {
+                const datasetIndex = datasetMetas.findIndex(obj => obj['_dataset']['id'] === newDataset['id']);
+                if (datasetIndex >= 0) {
+                    var existingDataset = chart.data.datasets[datasetIndex];
+
+                    console.log("Existing Dataset:");
+                    console.log(JSON.stringify(existingDataset, null, 3));
+                    console.log("New Dataset: ");
+                    console.log(JSON.stringify(newDataset, null, 3));
+
+                    Object.assign(existingDataset, newDataset);
+
+                    for (const prop in existingDataset) {
+                        if (existingDataset.hasOwnProperty(prop) && !newDataset.hasOwnProperty(prop)) {
+                            if (Array.isArray(existingDataset[prop])) {
+                                existingDataset[prop] = null;
+                                // chart.update('none');
+                            } else {
+                                delete existingDataset[prop];
+                            }
+                        }
+                    }
+
+                    console.log("Existing Dataset after:");
+                    console.log(JSON.stringify(existingDataset, null, 3));
+                }
+            });
+            chart.update();
+        }
+
+        function updateTest1() {
+            const updatedDataset = {
+                id: 'd4a5c6ce-b07b-4ee6-b370-007873ddd2e5',
+                label: 'Dataset 1',
+                data: [3, 2, 1],
+                backgroundColor: ["red", "lightblue", "lightyellow"],
+                borderColor: ["darkred", "blue", "yellow"],
+                borderWidth: 3
+            };
+            const chart = Chart.getChart('myChart');
+            updateDatasets(chart, [updatedDataset]);
+        }
+
+        function updateTestReset() {
+            const updatedDataset = {
+                id: 'd4a5c6ce-b07b-4ee6-b370-007873ddd2e5',
+                label: 'Dataset 1',
+                data: [1, 2, 3]
+            };
+            const chart = Chart.getChart('myChart');
+            updateDatasets(chart, [updatedDataset]);
+        }
+
+        function updateTestSingle() {
+            const updatedDataset = {
+                id: 'd4a5c6ce-b07b-4ee6-b370-007873ddd2e5',
+                label: 'Dataset 1',
+                data: [3, 2, 1],
+                backgroundColor: "red",
+                borderColor: "darkred",
+                borderWidth: 3
+            };
+            const chart = Chart.getChart('myChart');
+            updateDatasets(chart, [updatedDataset]);
+        }
+
+</script>
+
+</html>
