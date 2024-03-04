@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Chart js Test</title>
+  <style>
+    .myChartDiv {
+      max-width: 600px;
+      max-height: 400px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Testing for Chart JS</h1>
+  <div class="myChartDiv">
+    <canvas id="myChart" width="600" height="400"></canvas>
+  </div>
+</body>
+<script src="dist/chart.umd.js"></script>
+<script lang="text/javascript">
+  var ctx = document.getElementById('myChart');
+  // eslint-disable-next-line no-unused-vars, no-undef
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      datasets: [{
+        label: '# of Votes',
+        data: {a: 1, b: 3, c: 2}
+      }]
+    },
+    options: {
+      indexAxis: 'y' // works with 'x'
+    }
+  });
+</script>
+</html>
